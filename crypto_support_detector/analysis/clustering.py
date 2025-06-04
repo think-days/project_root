@@ -18,6 +18,8 @@ class SupportLevelClustering:
 
     def adaptive_eps(self, df: pd.DataFrame) -> float:
         """自适应计算聚类半径"""
+        df = df.copy()
+
         # 计算ATR
         df['tr'] = pd.concat([
             df['high'] - df['low'],
@@ -26,6 +28,7 @@ class SupportLevelClustering:
         ], axis=1).max(axis=1)
 
         atr_pct = df['tr'].tail(20).mean() / df['close'].mean()
+        df.drop(columns=['tr'], inplace=True)
 
         # 计算价格波动率
         volatility = df['close'].pct_change().tail(50).std()
